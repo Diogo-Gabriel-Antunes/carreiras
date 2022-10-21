@@ -1,6 +1,5 @@
 export interface IHeroi {
-  response: string;
-  id: string;
+  id?: string;
   name: string;
   powerstats: Powerstats;
   biography: Biography;

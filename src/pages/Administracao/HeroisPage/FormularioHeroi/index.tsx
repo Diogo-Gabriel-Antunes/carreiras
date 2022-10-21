@@ -17,19 +17,24 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import FormHerois from "../../../../components/Administracao/FormHerois";
+import {
+  InputPadrao,
+  PowerStatusInput,
+} from "../../../../components/Administracao/FormHerois";
 import NavBarAdministracao from "../../../../components/Administracao/Navbar";
 import { HeroisContext } from "../../../../context/HeroisContext";
 import { Appearance, IHeroi } from "../../../../interface/IHerois";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
+import { useForm, UseFormSetValue, FieldValues } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import esquemaDeValidacoes, { esquema } from "../../../../SchemaValidacao";
 
 const atualizaHerois = (Lista: IHeroi[], idDoHeroi: string, heroi: IHeroi) => {
   Lista.reduce((listaAntiga: IHeroi[], heroiAtualizado: IHeroi) => {
-    let obj = idDoHeroi.includes(heroiAtualizado.id)
+    let obj = idDoHeroi.includes(
+      heroiAtualizado.name ? heroiAtualizado.name : ""
+    )
       ? Object.assign(heroiAtualizado, heroi)
       : heroiAtualizado;
     listaAntiga.push(obj);
@@ -49,75 +54,66 @@ const cadastraHeroi = (lista: IHeroi[] | undefined, heroi: IHeroi) => {
   if (checaNomeExistente) {
     if (checaNomeExistente <= 0) {
       lista?.push(heroi);
-
       alert("Heroi Cadastrado com sucesso");
     } else {
       alert("Heroi ja cadastrado");
     }
   }
 };
-// const save = (e: any) => {
-//   e.preventDefault();
-//   if (parametros.id) {
-//     if (context?.herois) {
-//       atualizaHerois(context?.herois, parametros.id, heroi);
-//       navigate("/herois");
-//     }
-//   } else {
-//     cadastraHeroi(context?.herois, heroi);
-//     navigate("/herois");
-//   }
-// };
 
-const esquemaDeValidacoes = yup.object().shape({
-  nome: yup.string().min(3).required(),
-  "Nome Completo": yup.string().min(3).trim().required(),
-  "Altura em cm": yup.number().positive().required(),
-  Apelidos: yup.string(),
-  "Cor do olho": yup.string().trim().min(5).required(),
-  Editora: yup.string().trim().min(3).required(),
-  "Cor do cabelo": yup.string(),
-  Nacionalidade: yup.string().min(5).required(),
-  Personalidiades: yup.string(),
-  "Peso por kg": yup.number().positive(),
-  "Primeira Aparição": yup.string().trim().min(5).required(),
-  Raça: yup.string().trim().min(2).required(),
-});
+const reformaHeroi = (heroi: esquema): IHeroi => {
+  return {
+    name: heroi.name,
+
+    biography: {
+      "full-name": heroi["full-name"],
+      "alter-egos": heroi["alter-egos"],
+      aliases: [heroi.aliases],
+      "place-of-birth": heroi["place-of-birth"],
+      "first-appearance": heroi["first-appearance"],
+      publisher: heroi.publisher,
+      alignment: heroi.alignment,
+    },
+
+    appearance: {
+      gender: heroi.gender,
+      race: heroi.race,
+      height: [heroi.height],
+      weight: [heroi.weight],
+      "eye-color": heroi["eye-color"],
+      "hair-color": heroi["hair-color"],
+    },
+
+    work: {
+      occupation: heroi.occupation,
+      base: heroi.base,
+    },
+
+    connections: {
+      "group-affiliation": heroi["group-affiliation"],
+      relatives: heroi.relatives,
+    },
+
+    powerstats: {
+      intelligence: heroi.intelligence,
+      strength: heroi.strength,
+      speed: heroi.speed,
+      durability: heroi.durability,
+      power: heroi.power,
+      combat: heroi.combat,
+    },
+    image: {
+      url: heroi.url,
+    },
+  };
+};
 
 const FormHeroi = () => {
   const navigate = useNavigate();
   const context = useContext(HeroisContext);
   const parametros = useParams();
-  const arrayBiografia = [
-    "Nome Completo",
-    "Personalidades",
-    "Apelidos",
-    "Nacionalidade",
-    "Primeira Aparição",
-    "Editora",
-    "Apelidos",
-  ];
 
-  const arrayPowerStats = [
-    "Combate",
-    "Inteligencia",
-    "Força",
-    "Velocidade",
-    "Durabilidade",
-    "Poder",
-  ];
-
-  const arrayAparencia = [
-    "Genero",
-    "Raça",
-    "Altura em cm",
-    "Peso por kg",
-    "Cor do olho",
-    "Cor do cabelo",
-  ];
-
-  const [heroi, setHeroi] = useState<IHeroi | undefined | any>({
-    response: "",
+  const [heroi, setHeroi] = useState<IHeroi>({
     id: "",
     name: "",
     powerstats: {
@@ -158,33 +154,73 @@ const FormHeroi = () => {
     },
   });
   const submit = (heroi: any) => {
+    const heroiReformado = reformaHeroi(heroi);
     console.log(heroi);
+    if (parametros.id && context?.herois) {
+      console.log(context.herois);
+      atualizaHerois(context.herois, parametros.id, heroiReformado);
+    } else {
+      cadastraHeroi(context?.herois, heroiReformado);
+      navigate("/herois");
+    }
   };
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: yupResolver(esquemaDeValidacoes),
   });
 
-  useEffect(() => {
+  const setaValores = (
+    setValue: UseFormSetValue<FieldValues>,
+    heroi: IHeroi
+  ) => {
+    setValue("name", heroi.name);
+    setValue("full-name", heroi.biography["full-name"]);
+    setValue("aliases", heroi.biography.aliases[1]);
+    setValue("alignment", heroi.biography.alignment);
+    setValue("alter-egos", heroi.biography["alter-egos"]);
+    setValue("first-appearance", heroi.biography["first-appearance"]);
+    setValue("place-of-birth", heroi.biography["place-of-birth"]);
+    setValue("publisher", heroi.biography.publisher);
+    setValue("eye-color", heroi.appearance["eye-color"]);
+    setValue("gender", heroi.appearance.gender);
+    setValue("hair-color", heroi.appearance["hair-color"]);
+    setValue("height", heroi.appearance.height[1].substring(0, 3));
+    setValue("race", heroi.appearance.race);
+    setValue("weight", heroi.appearance.weight[1].substring(0, 3));
+    setValue("base", heroi.work.base);
+    setValue("occupation", heroi.work.occupation);
+    setValue("group-affiliation", heroi.connections["group-affiliation"]);
+    setValue("relatives", heroi.connections.relatives);
+    setValue("combat", heroi.powerstats.combat);
+    setValue("durability", heroi.powerstats.durability);
+    setValue("intelligence", heroi.powerstats.intelligence);
+    setValue("power", heroi.powerstats.power);
+    setValue("speed", heroi.powerstats.speed);
+    setValue("strength", heroi.powerstats.strength);
+  };
+
+  useLayoutEffect(() => {
     if (parametros.id) {
       const heroi = context?.herois?.filter(
         (herois) => herois.id === parametros.id
       )[0];
-      setHeroi(heroi);
+      heroi && setHeroi(heroi);
     }
   }, [context, parametros]);
-
   return (
     <Box display="flex">
       <Box>
         <NavBarAdministracao />
       </Box>
       <Box margin="0 auto">
-        <Heading textAlign="center">Cadastro de heroi</Heading>
+        <Heading textAlign="center">
+          {parametros.id ? "Atualize o herois" : "Cadastro de heroi"}
+        </Heading>
         <form onSubmit={handleSubmit(submit)}>
           <FormControl
             border="1px solid #CCC"
@@ -196,17 +232,34 @@ const FormHeroi = () => {
               <Box margin="0 auto">
                 <FormLabel textAlign="center">Nome</FormLabel>
                 <Input
-                  {...register("nome")}
                   type="text"
+                  defaultValue={heroi.name}
+                  {...register("name")}
                   value={heroi?.name}
-                  name="nome"
+                  name="name"
                   onChange={(e) => {
                     const novoEstado = Object.assign({}, heroi);
                     novoEstado.name = e.target.value;
                     setHeroi(novoEstado);
                   }}
                 />
-                <>{errors.nome ? errors.nome?.message : ""}</>
+                <>{errors?.name?.message}</>
+              </Box>
+              <Box margin="0 auto">
+                <FormLabel textAlign="center">Imagem(URL)</FormLabel>
+                <Input
+                  {...register("url")}
+                  type="text"
+                  defaultValue={heroi.image.url}
+                  value={heroi?.image.url}
+                  name="url"
+                  onChange={(e) => {
+                    const novoEstado = Object.assign({}, heroi);
+                    novoEstado.image.url = e.target.value;
+                    setHeroi(novoEstado);
+                  }}
+                />
+                <>{errors?.url?.message}</>
               </Box>
             </Box>
             <hr />
@@ -216,31 +269,60 @@ const FormHeroi = () => {
                   PowerStats
                 </Heading>
                 <SimpleGrid columns={3} spacing={10}>
-                  {Object.keys(heroi.powerstats).map((stats: any, index) => (
-                    <Box margin="32px" key={index}>
-                      <FormLabel textAlign="center">
-                        {arrayPowerStats[index]}
-                      </FormLabel>
-                      <NumberInput
-                        step={1}
-                        defaultValue={0}
-                        min={0}
-                        max={100}
-                        value={heroi.powerstats[stats]}
-                        onChange={(e: any) => {
-                          const novoEstado = Object.assign({}, heroi);
-                          novoEstado.powerstats[stats] = e;
-                          setHeroi(novoEstado);
-                        }}
-                      >
-                        <NumberInputField />
-                        <NumberInputStepper>
-                          <NumberIncrementStepper />
-                          <NumberDecrementStepper />
-                        </NumberInputStepper>
-                      </NumberInput>
-                    </Box>
-                  ))}
+                  <PowerStatusInput
+                    heroi={heroi}
+                    label={"Força"}
+                    setHeroi={setHeroi}
+                    value={heroi.powerstats.strength}
+                    errors={errors.strength?.message?.toString()}
+                    name={"strength"}
+                    register={register}
+                  />
+                  <PowerStatusInput
+                    heroi={heroi}
+                    label={"Combate"}
+                    setHeroi={setHeroi}
+                    value={heroi.powerstats.combat}
+                    errors={errors.combat?.message?.toString()}
+                    name={"combat"}
+                    register={register}
+                  />
+                  <PowerStatusInput
+                    heroi={heroi}
+                    label={"Durabilidade"}
+                    setHeroi={setHeroi}
+                    value={heroi.powerstats.durability}
+                    errors={errors.durability?.message?.toString()}
+                    name={"durability"}
+                    register={register}
+                  />
+                  <PowerStatusInput
+                    heroi={heroi}
+                    label={"Inteligencia"}
+                    setHeroi={setHeroi}
+                    value={heroi.powerstats.intelligence}
+                    errors={errors.intelligence?.message?.toString()}
+                    name={"intelligence"}
+                    register={register}
+                  />
+                  <PowerStatusInput
+                    heroi={heroi}
+                    label={"Poder"}
+                    setHeroi={setHeroi}
+                    value={heroi.powerstats.power}
+                    errors={errors.power?.message?.toString()}
+                    name={"power"}
+                    register={register}
+                  />
+                  <PowerStatusInput
+                    heroi={heroi}
+                    label={"Velocidade"}
+                    setHeroi={setHeroi}
+                    value={heroi.powerstats.speed}
+                    errors={errors.speed?.message?.toString()}
+                    name={"speed"}
+                    register={register}
+                  />
                 </SimpleGrid>
               </Box>
             </Box>
@@ -255,55 +337,60 @@ const FormHeroi = () => {
                 <Box display="flex" flexDirection="column" alignItems="center">
                   <Box display="flex">
                     <SimpleGrid columns={3} spacing={10}>
-                      {Object.keys(heroi?.biography).map(
-                        (biografia: any, index) => (
-                          <Box margin="32px" key={index}>
-                            {biografia === "alignment" ? (
-                              <>
-                                <FormLabel textAlign="center">
-                                  Heroi/Vilão
-                                </FormLabel>
-                                <Select
-                                  required
-                                  placeholder="Heroi/Vilão"
-                                  width="241px"
-                                  name={"Heroi/Vilao"}
-                                  value={heroi?.biography?.alignment}
-                                  onChange={(e) => {
-                                    const novoEstado = Object.assign({}, heroi);
-                                    novoEstado.biography.alignment =
-                                      e.target.value;
-                                    setHeroi(novoEstado);
-                                  }}
-                                >
-                                  <option value="Good">Heroi</option>
-                                  <option value="Bad">Vilão</option>
-                                </Select>
-                              </>
-                            ) : (
-                              <>
-                                <FormLabel textAlign="center" key={index}>
-                                  {arrayBiografia[index]}
-                                </FormLabel>
-
-                                <Input
-                                  {...register(arrayBiografia[index])}
-                                  placeholder={`${arrayBiografia[index]} do heroi`}
-                                  value={heroi?.biography[biografia]}
-                                  name={arrayBiografia[index]}
-                                  onChange={(e: any) => {
-                                    const novoEstado = Object.assign({}, heroi);
-                                    novoEstado.biography[biografia] =
-                                      e.target.value;
-                                    setHeroi(novoEstado);
-                                  }}
-                                />
-                                {errors[arrayBiografia[index]]?.message}
-                              </>
-                            )}
-                          </Box>
-                        )
-                      )}
+                      <InputPadrao
+                        heroi={heroi}
+                        label={"Nome Completo"}
+                        name="full-name"
+                        register={register}
+                        setHeroi={setHeroi}
+                        value={heroi.biography["full-name"]}
+                        errors={errors["full-name"]?.message?.toString()}
+                      />
+                      <InputPadrao
+                        heroi={heroi}
+                        label={"Herois/Vilão"}
+                        name="alignment"
+                        register={register}
+                        setHeroi={setHeroi}
+                        value={heroi.biography.alignment}
+                        errors={errors.alignment?.message?.toString()}
+                      />
+                      <InputPadrao
+                        heroi={heroi}
+                        label={"Personalidades"}
+                        name="alter-egos"
+                        register={register}
+                        setHeroi={setHeroi}
+                        value={heroi.biography["alter-egos"]}
+                        errors={errors["alter-egos"]?.message?.toString()}
+                      />
+                      <InputPadrao
+                        heroi={heroi}
+                        label={"Primeira Atuação"}
+                        name="first-appearance"
+                        register={register}
+                        setHeroi={setHeroi}
+                        value={heroi.biography["first-appearance"]}
+                        errors={errors["first-appearance"]?.message?.toString()}
+                      />
+                      <InputPadrao
+                        heroi={heroi}
+                        label={"Cidade que nasceu"}
+                        name="place-of-birth"
+                        register={register}
+                        setHeroi={setHeroi}
+                        value={heroi.biography["place-of-birth"]}
+                        errors={errors["place-of-birth"]?.message?.toString()}
+                      />
+                      <InputPadrao
+                        heroi={heroi}
+                        label={"Editora"}
+                        name="publisher"
+                        register={register}
+                        setHeroi={setHeroi}
+                        value={heroi.biography.publisher}
+                        errors={errors.publisher?.message?.toString()}
+                      />
                     </SimpleGrid>
                   </Box>
                 </Box>
@@ -320,71 +407,60 @@ const FormHeroi = () => {
               <Box display="flex" flexDirection="column">
                 <Box display="flex">
                   <SimpleGrid columns={3} spacing={10}>
-                    {Object.keys(heroi?.appearance).map((aparencia, index) => (
-                      <Box margin="32px" key={index}>
-                        {aparencia === "gender" ? (
-                          <>
-                            <FormLabel textAlign="center">
-                              {arrayAparencia[index]}
-                            </FormLabel>
-                            <Select
-                              placeholder="Genero"
-                              width="207px"
-                              name="genero"
-                              value={heroi?.appearance?.gender}
-                              onChange={(e) => {
-                                const novoEstado = Object.assign({}, heroi);
-                                novoEstado.appearance.gender = e.target.value;
-                                setHeroi(novoEstado);
-                              }}
-                            >
-                              <option value="Masculino">Masculino</option>
-                              <option value="Feminino">Feminino</option>
-                              <option value="-">Indefindo</option>
-                            </Select>
-                            <>{errors[aparencia]?.message}</>
-                          </>
-                        ) : (
-                          <>
-                            <FormLabel textAlign="center">
-                              {arrayAparencia[index]}
-                            </FormLabel>
-                            {arrayAparencia[index] === "Altura em cm" ||
-                            arrayAparencia[index] === "Peso por kg" ? (
-                              <Input
-                                {...register(arrayAparencia[index])}
-                                type="number"
-                                name={arrayAparencia[index]}
-                                placeholder={`${arrayAparencia[index]} do heroi `}
-                                value={heroi?.appearance[aparencia][0]}
-                                onChange={(e) => {
-                                  const novoEstado = Object.assign({}, heroi);
-                                  novoEstado.appearance[aparencia] = Number(
-                                    e.target.value
-                                  );
-
-                                  setHeroi(novoEstado);
-                                }}
-                              />
-                            ) : (
-                              <Input
-                                {...register(arrayAparencia[index])}
-                                name={arrayAparencia[index]}
-                                placeholder={`${arrayAparencia[index]} do heroi `}
-                                value={heroi?.appearance[aparencia]}
-                                onChange={(e) => {
-                                  const novoEstado = Object.assign({}, heroi);
-                                  novoEstado.appearance[aparencia] =
-                                    e.target.value;
-                                  setHeroi(novoEstado);
-                                }}
-                              />
-                            )}
-                            <>{errors[aparencia]?.message}</>
-                          </>
-                        )}
-                      </Box>
-                    ))}
+                    <InputPadrao
+                      heroi={heroi}
+                      label={"Genero"}
+                      name="gender"
+                      register={register}
+                      setHeroi={setHeroi}
+                      value={heroi.appearance.gender}
+                      errors={errors.gender?.message?.toString()}
+                    />
+                    <InputPadrao
+                      heroi={heroi}
+                      label={"Peso"}
+                      name="weight"
+                      register={register}
+                      setHeroi={setHeroi}
+                      value={heroi.appearance.weight[1]?.substring(0, 3)}
+                      errors={errors.weight?.message?.toString()}
+                    />
+                    <InputPadrao
+                      heroi={heroi}
+                      label={"Raça"}
+                      name="race"
+                      register={register}
+                      setHeroi={setHeroi}
+                      value={heroi.appearance.race}
+                      errors={errors.race?.message?.toString()}
+                    />
+                    <InputPadrao
+                      heroi={heroi}
+                      label={"Altura"}
+                      name="height"
+                      register={register}
+                      setHeroi={setHeroi}
+                      value={heroi.appearance.height[1]?.substring(0, 3)}
+                      errors={errors.height?.message?.toString()}
+                    />
+                    <InputPadrao
+                      heroi={heroi}
+                      label={"Cor do Cabelo"}
+                      name="hair-color"
+                      register={register}
+                      setHeroi={setHeroi}
+                      value={heroi.appearance["hair-color"]}
+                      errors={errors["hair-color"]?.message?.toString()}
+                    />
+                    <InputPadrao
+                      heroi={heroi}
+                      label={"Cor dos olhos"}
+                      name="eye-color"
+                      register={register}
+                      setHeroi={setHeroi}
+                      value={heroi.appearance["eye-color"]}
+                      errors={errors["eye-color"]?.message?.toString()}
+                    />
                   </SimpleGrid>
                 </Box>
               </Box>
@@ -401,8 +477,8 @@ const FormHeroi = () => {
                       <FormLabel textAlign="center">Profissão</FormLabel>
 
                       <Input
-                        {...register("Profissao")}
-                        name="Profissao"
+                        {...register("occupation")}
+                        name="occupation"
                         placeholder="Profissão do heroi"
                         value={heroi?.work?.occupation}
                         onChange={(e) => {
@@ -444,8 +520,8 @@ const FormHeroi = () => {
                       <FormLabel textAlign="center">Familiares</FormLabel>
 
                       <Input
-                        {...register("vinculos")}
-                        name="vinculos"
+                        {...register("relatives")}
+                        name="relatives"
                         placeholder="Vinculos do heroi"
                         value={heroi?.connections?.relatives}
                         onChange={(e) => {
@@ -460,16 +536,12 @@ const FormHeroi = () => {
                     <Box margin="32px">
                       <FormLabel textAlign="center">Vinculos</FormLabel>
                       <Textarea
-                        {...register("familiares")}
-                        name="familiares"
+                        {...register("group-affiliation")}
+                        name="group-affiliation"
                         placeholder="Familiares do heroi"
                         width="241px"
                         resize="none"
-                        value={
-                          heroi?.connections
-                            ? heroi?.connections["group-affiliation"]
-                            : ""
-                        }
+                        value={heroi?.connections["group-affiliation"]}
                         onChange={(e) => {
                           const novoEstado = Object.assign({}, heroi);
                           novoEstado.connections["group-affiliation"] =
@@ -485,13 +557,18 @@ const FormHeroi = () => {
             <Box display="flex">
               {parametros.id ? (
                 <Box margin="32px auto">
-                  <Input
+                  <Button
                     value="Atualizar"
                     type="submit"
                     bgColor="blue.500"
                     color="white"
                     cursor="pointer"
-                  ></Input>
+                    onClick={() => {
+                      setaValores(setValue, heroi);
+                    }}
+                  >
+                    Atualizar
+                  </Button>
                 </Box>
               ) : (
                 <Box margin="32px auto">
