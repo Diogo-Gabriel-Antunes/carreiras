@@ -27,6 +27,7 @@ const FormInfosGrupo = ({
   funcaoDoBotao,
   parametrosDaFuncao,
 }: Props) => {
+  console.log(parametrosDaFuncao);
   return (
     <Box padding="100px">
       <Heading textAlign="center">{titulo}</Heading>

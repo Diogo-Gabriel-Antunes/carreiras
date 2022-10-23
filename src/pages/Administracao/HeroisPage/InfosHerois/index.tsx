@@ -9,56 +9,59 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Footer from "../../../components/Footer";
-import Alicao from "../../../components/Heroes/Aliação";
-import Aparencia from "../../../components/Heroes/Aparencia";
-import Biografia from "../../../components/Heroes/Biografia";
-import PowerStats from "../../../components/Heroes/PowerStats";
-import Trabalho from "../../../components/Heroes/Trabalho";
-import NavBar from "../../../components/NavBar";
-import { HeroisContext } from "../../../context/HeroisContext";
+import NavBarAdministracao from "../../../../components/Administracao/Navbar";
+import Alicao from "../../../../components/Heroes/Aliação";
+import Aparencia from "../../../../components/Heroes/Aparencia";
+import Biografia from "../../../../components/Heroes/Biografia";
+import PowerStats from "../../../../components/Heroes/PowerStats";
+import Trabalho from "../../../../components/Heroes/Trabalho";
+import { HeroisContext } from "../../../../context/HeroisContext";
+import { IHeroi } from "../../../../interface/IHerois";
 
-const HeroesId = () => {
-  const parametro = useParams();
+const InfosHerois = () => {
   const context = useContext(HeroisContext);
-  const herois = context?.herois?.filter(
-    (herois) => herois.id === parametro.id
-  )[0];
-  console.log(herois);
+  const parametros = useParams();
+  const [heroi, setHeroi] = useState<IHeroi>();
+
+  useEffect(() => {
+    const heroi = context?.herois?.filter(
+      (herois) => herois.id === parametros.id
+    )[0];
+    heroi && setHeroi(heroi);
+  }, []);
   return (
-    <Box>
+    <Box display="flex">
       <Box>
-        <NavBar />
+        <NavBarAdministracao />
       </Box>
-      <Box>
+      <Box margin="0 auto">
         <Box
-          backgroundColor={"blackAlpha.700"}
+          backgroundColor={"blue.300"}
           backgroundSize={"1920px"}
           display="flex"
+          width="100%"
         >
           <Box margin="50px auto" display="flex" color={"white"}>
-            <Box width={"400px"} margin="0px 100px">
-              <Heading>{herois?.name}</Heading>
+            <Box width={"829px"} margin="0px 100px">
+              <Heading>{heroi?.name}</Heading>
               <Text marginTop={"12px"}>
                 <strong> Apelidos </strong>:{" "}
-                {herois?.biography?.aliases?.map((apelido, index) => (
+                {heroi?.biography?.aliases?.map((apelido, index) => (
                   <>
                     {" "}
                     {apelido}
-                    {herois?.biography?.aliases.length === index + 1
-                      ? "."
-                      : ","}
+                    {heroi?.biography?.aliases.length === index + 1 ? "." : ","}
                   </>
                 ))}
               </Text>
 
-              <PowerStats status={herois?.powerstats} />
+              <PowerStats status={heroi?.powerstats} />
             </Box>
             <Box>
               <Image
-                src={herois?.image?.url}
+                src={heroi?.image?.url}
                 width="396px"
                 margin="0px 100px"
                 borderRadius={"12px"}
@@ -75,9 +78,10 @@ const HeroesId = () => {
           <Box
             margin="32px auto"
             border="3px solid"
-            borderColor="gray.500"
+            borderColor="blue.300"
             borderRadius="24px"
             padding="32px"
+            width="1240px"
           >
             <Tabs isFitted variant="enclosed">
               <TabList mb="1em">
@@ -86,27 +90,26 @@ const HeroesId = () => {
                 <Tab>Trabalho</Tab>
                 <Tab>Afiliacao</Tab>
               </TabList>
-              <TabPanels minWidth="1280px">
+              <TabPanels width={"1115px"}>
                 <TabPanel>
-                  <Aparencia aparencia={herois?.appearance} />
+                  <Aparencia aparencia={heroi?.appearance} />
                 </TabPanel>
                 <TabPanel>
-                  <Biografia biografia={herois?.biography} />
+                  <Biografia biografia={heroi?.biography} />
                 </TabPanel>
                 <TabPanel>
-                  <Trabalho trabalho={herois?.work} />
+                  <Trabalho trabalho={heroi?.work} />
                 </TabPanel>
                 <TabPanel>
-                  <Alicao conexao={herois?.connections} />
+                  <Alicao conexao={heroi?.connections} />
                 </TabPanel>
               </TabPanels>
             </Tabs>
           </Box>
         </Box>
       </Box>
-      <Footer />
     </Box>
   );
 };
 
-export default HeroesId;
+export default InfosHerois;

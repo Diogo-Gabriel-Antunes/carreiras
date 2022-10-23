@@ -53,9 +53,9 @@ const cadastraGrupo = (lista: IGrupo[] | undefined, grupo: IGrupo) => {
   if (checaNome) {
     if (checaNome <= 0) {
       lista?.push(grupo);
-      alert("Heroi Cadastrado com sucesso");
+      alert("Grupo Cadastrado com sucesso");
     } else {
-      alert("Heroi ja cadastrado");
+      alert("Grupo ja cadastrado");
     }
   }
 };
@@ -134,8 +134,7 @@ const GrupoInfos = () => {
       setNovoNomeDoGrupo(grupo?.name);
       setHeroisDisponiveis(HeroisDisponiveisFiltrado);
     }
-    setHeroisDisponiveis(context?.herois);
-  }, [grupo?.integrantes, context?.herois, parametros.id, grupo?.name]);
+  }, [grupo?.integrantes, context?.herois, parametros.id]);
 
   return (
     <Box display="flex">
@@ -143,7 +142,7 @@ const GrupoInfos = () => {
         <NavBarAdministracao />
       </Box>
       <Box width="100%">
-        <Box>
+        <Box margin="50px 0">
           <Box margin="20px auto">
             <Heading textAlign="center">
               {parametros.id ? `Grupo : ${grupo?.name}` : "Crie seu grupo"}
@@ -152,7 +151,8 @@ const GrupoInfos = () => {
 
           {parametros.id ? (
             <Box
-              border="1px solid #Ccc"
+              border="1px solid"
+              borderColor="blue.300"
               margin="80px"
               padding="32px"
               borderRadius="12px"
@@ -176,6 +176,7 @@ const GrupoInfos = () => {
                         display="flex"
                         flexDirection="column"
                         alignItems="center"
+                        data-testid={`card${integrante.id}`}
                       >
                         <CardHero hero={integrante} />
                         <Box
@@ -216,7 +217,8 @@ const GrupoInfos = () => {
           )}
 
           <Box
-            border="1px solid #Ccc"
+            border="1px solid "
+            borderColor="blue.300"
             margin="80px"
             padding="32px"
             borderRadius="12px"
@@ -296,7 +298,8 @@ const GrupoInfos = () => {
           <Box display="flex" width="100%">
             <Box
               margin="0 auto"
-              border="1px solid #ccc"
+              border="1px solid "
+              borderColor="blue.300"
               width="90%"
               borderRadius="12px"
             >
@@ -357,7 +360,11 @@ const GrupoInfos = () => {
               <Box margin="20px auto">
                 <Box>
                   <Box display="flex" width="100%">
-                    <Box border="1px solid #ccc" borderRadius="12px 0 0 12px">
+                    <Box
+                      border="1px solid "
+                      borderColor="blue.300"
+                      borderRadius="12px 0 0 12px"
+                    >
                       <Box marginX="135px">
                         <FormInfosGrupo
                           label="Nome"
@@ -387,7 +394,11 @@ const GrupoInfos = () => {
               <Box margin="20px auto">
                 <Box>
                   <Box display="flex" width="100%">
-                    <Box border="1px solid #ccc" borderRadius="12px 0 0 12px">
+                    <Box
+                      border="1px solid "
+                      borderColor="blue.300"
+                      borderRadius="12px 0 0 12px"
+                    >
                       <Box marginX="135px">
                         <FormInfosGrupo
                           label="Nome"
@@ -399,8 +410,7 @@ const GrupoInfos = () => {
                             {
                               id: parametros.id,
                               name: novoNomeDoGrupo,
-                              integrantes:
-                                grupo?.integrantes.concat(integrantes),
+                              integrantes: integrantes,
                             },
                           ]}
                           funcaoDoBotao={cadastraGrupo}

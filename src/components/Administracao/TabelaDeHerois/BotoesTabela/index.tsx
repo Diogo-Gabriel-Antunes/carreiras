@@ -33,25 +33,41 @@ const BotoesTabela = ({ heroi, grupo, refresh, setRefresh }: Props) => {
 
   return (
     <>
-      <Td isNumeric>
-        {heroi ? (
-          <Box display="flex">
-            <Box margin="0 auto">
-              <Link to={`/herois/${heroi.id}`}>
-                <Button colorScheme="blue">Editar</Button>
-              </Link>
+      {heroi ? (
+        <>
+          <Td isNumeric>
+            <Box display="flex">
+              <Box margin="0 auto">
+                <Link to={`/infosheroi/${heroi.id}`}>
+                  <Button colorScheme="blue">Infos</Button>
+                </Link>
+              </Box>
             </Box>
-          </Box>
-        ) : (
-          <Box display="flex">
-            <Box margin="0 auto">
-              <Link to={`/grupo/${grupo?.id}`}>
-                <Button colorScheme="blue">Infos Do Grupo</Button>
-              </Link>
+          </Td>
+          <Td isNumeric>
+            <Box display="flex">
+              <Box margin="0 auto">
+                <Link to={`/herois/${heroi.id}`}>
+                  <Button colorScheme="blue">Editar</Button>
+                </Link>
+              </Box>
             </Box>
-          </Box>
-        )}
-      </Td>
+          </Td>
+        </>
+      ) : (
+        <>
+          <Td isNumeric>
+            <Box display="flex">
+              <Box margin="0 auto">
+                <Link to={`/grupo/${grupo?.id}`}>
+                  <Button colorScheme="blue">Infos Do Grupo</Button>
+                </Link>
+              </Box>
+            </Box>
+          </Td>
+        </>
+      )}
+
       <Td isNumeric>
         <Box display="flex">
           <Box margin="0 auto">

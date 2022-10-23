@@ -30,7 +30,7 @@ const HeroisPage = () => {
     "Durabilidade",
     "Poder",
     "Combate",
-
+    "Infos",
     "Editar",
     "Deletar",
   ];
@@ -51,9 +51,11 @@ const HeroisPage = () => {
         <Box margin="12px auto">
           <TableContainer
             marginTop="30px"
-            border="1px solid #ccc"
+            border="1px solid "
+            borderColor="blue.300"
             padding="24px 50px"
             width="100%"
+            borderRadius="12px"
           >
             <Box>
               <Box display="flex" justifyContent="space-between" my="12px">

@@ -49,16 +49,14 @@ const Pagination = ({
         margin="0px 12px"
         onClick={() => {
           if (tamanhoMaximo) {
-            if (sliceEnd + 6 >= tamanhoMaximo) {
-              setSliceStart(tamanhoMaximo - 6);
+            if (sliceEnd + numeroPorPagina > tamanhoMaximo) {
               setSliceEnd(tamanhoMaximo);
+              setSliceStart(tamanhoMaximo - numeroPorPagina);
               setPagina(pagina);
             } else {
-              if (tamanhoMaximo) {
-                setSliceStart(sliceStart + numeroPorPagina);
-                setSliceEnd(sliceEnd + numeroPorPagina);
-                setPagina(pagina + 1);
-              }
+              setSliceStart(sliceStart + numeroPorPagina);
+              setSliceEnd(sliceEnd + numeroPorPagina);
+              setPagina(pagina + 1);
             }
           }
         }}

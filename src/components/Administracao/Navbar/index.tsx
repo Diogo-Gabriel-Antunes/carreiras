@@ -8,7 +8,7 @@ const NavBarAdministracao = () => {
         Heros
       </Heading>
 
-      <Link to="/herois">
+      <Link to="/">
         <Button padding="12px" width="100%" borderRadius="0" colorScheme="blue">
           Herois
         </Button>

@@ -34,7 +34,7 @@ const TabelaDeHerois = ({
   setHeroisDisponiveis,
 }: Props) => {
   return (
-    <Tr>
+    <Tr data-testid={grupo ? `grupo${grupo?.id}` : `heroi${heroi?.id}`}>
       <Td>
         <Box display="flex">
           <Box margin="0 auto">{heroi ? heroi.id : grupo?.id}</Box>

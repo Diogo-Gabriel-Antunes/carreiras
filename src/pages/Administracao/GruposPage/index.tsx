@@ -39,7 +39,9 @@ const GruposPage = () => {
         <Box margin="12px auto">
           <TableContainer
             marginTop="30px"
-            border="1px solid #ccc"
+            border="1px solid "
+            borderColor="blue.300"
+            borderRadius="12px"
             padding="24px 50px"
             width="100%"
           >
@@ -125,7 +127,7 @@ const GruposPage = () => {
                     setSliceStart={setSliceStart}
                     sliceEnd={sliceEnd}
                     sliceStart={sliceStart}
-                    tamanhoMaximo={gruposPesquisados?.length}
+                    tamanhoMaximo={context?.listaDeGrupos?.length}
                   />
                 </Box>
               </Box>

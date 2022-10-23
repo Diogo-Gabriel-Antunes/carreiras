@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Divider,
   FormControl,
   FormLabel,
   Heading,
@@ -206,13 +207,14 @@ const FormHeroi = () => {
       <Box>
         <NavBarAdministracao />
       </Box>
-      <Box margin="0 auto">
+      <Box margin="50px auto">
         <Heading textAlign="center">
           {parametros.id ? "Atualize o herois" : "Cadastro de heroi"}
         </Heading>
         <form onSubmit={handleSubmit(submit)}>
           <FormControl
-            border="1px solid #CCC"
+            border="1px solid"
+            borderColor={"blue.500"}
             width="1280px"
             margin="32px 0"
             borderRadius="12px"
@@ -241,7 +243,7 @@ const FormHeroi = () => {
                 />
               </Box>
             </Box>
-            <hr />
+            <Divider borderColor="blue.500" />
             <Box display="flex">
               <Box margin="0px auto" padding="32px 0px">
                 <Heading textAlign="center" margin="0px auto 32px auto ">
@@ -305,7 +307,7 @@ const FormHeroi = () => {
                 </SimpleGrid>
               </Box>
             </Box>
-            <hr />
+            <Divider borderColor="blue.500" />
             <Box display="flex">
               <Box width="100%">
                 <Box margin="0px auto" padding="32px 0px">
@@ -408,7 +410,7 @@ const FormHeroi = () => {
               </Box>
             </Box>
 
-            <hr />
+            <Divider borderColor="blue.500" />
             <Box display="flex" flexDirection="column" alignItems="center">
               <Box margin="0px auto" padding="32px 0px">
                 <Heading textAlign="center" margin="0px auto 32px auto ">
@@ -499,7 +501,7 @@ const FormHeroi = () => {
                 </Box>
               </Box>
             </Box>
-            <hr />
+            <Divider borderColor="blue.500" />
             <Box display="flex">
               <Box margin="0px auto" padding="32px 0px">
                 <Heading textAlign="center" margin="0px auto 32px auto ">
