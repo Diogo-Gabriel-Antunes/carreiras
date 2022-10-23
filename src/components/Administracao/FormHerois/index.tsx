@@ -32,29 +32,39 @@ export const PowerStatusInput = ({
 }: Props) => {
   return (
     <>
-      <Box margin="32px">
+      <Box
+        margin="24px"
+        border="2px solid"
+        borderColor="blue.700"
+        padding="20px 0"
+        borderRadius={12}
+      >
         <FormLabel textAlign="center">{label}</FormLabel>
-        <NumberInput
-          {...register(name)}
-          name={name}
-          step={1}
-          defaultValue={0}
-          min={0}
-          max={100}
-          value={value}
-          onChange={(e) => {
-            const novoEstado: any = Object.assign({}, heroi);
-            novoEstado.powerstats[name] = e;
-            setHeroi(novoEstado);
-          }}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-        {errors}
+        <Box margin="32px">
+          <NumberInput
+            borderColor="blue.500"
+            variant="filled"
+            {...register(name)}
+            name={name}
+            step={1}
+            defaultValue={0}
+            min={0}
+            max={100}
+            value={value}
+            onChange={(e) => {
+              const novoEstado: any = Object.assign({}, heroi);
+              novoEstado.powerstats[name] = e;
+              setHeroi(novoEstado);
+            }}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+          <p className={`error${name}`}>{errors}</p>
+        </Box>
       </Box>
     </>
   );
@@ -71,11 +81,22 @@ export const InputPadrao = ({
 }: Props) => {
   return (
     <>
-      <Box margin="32px">
-        <FormLabel textAlign="center">{label}</FormLabel>
+      <Box
+        margin="32px"
+        border="2px solid"
+        borderColor="blue.700"
+        padding="20px 0"
+        borderRadius={12}
+      >
+        <FormLabel textAlign="center" fontSize="18px" data-testid="label">
+          {label}
+        </FormLabel>
         <Box margin="32px">
           <>
             <Input
+              data-testid="input"
+              borderColor="blue.500"
+              variant="filled"
               {...register(name)}
               placeholder={`${label} do heroi`}
               defaultValue={value}
@@ -86,43 +107,9 @@ export const InputPadrao = ({
                 setHeroi(novoEstado);
               }}
             />
-            {errors}
+            <p className={`error${name}`}>{errors}</p>
           </>
         </Box>
-      </Box>
-    </>
-  );
-};
-export const AparenciaInput = ({
-  heroi,
-  register,
-  setHeroi,
-  errors,
-  name,
-  label,
-  value,
-}: Props) => {
-  return (
-    <>
-      <Box margin="32px">
-        <FormLabel textAlign="center">height</FormLabel>
-
-        <Input
-          {...register("height")}
-          type="number"
-          name={"height"}
-          placeholder={`height do heroi `}
-          value={heroi?.appearance?.height[1]?.substring(0, 3)}
-          onChange={(e) => {
-            const novoEstado = Object.assign({}, heroi);
-            novoEstado.appearance.height = [
-              `${Number(e.target.value) * 1.5}`,
-              `${Number(e.target.value)}`,
-            ];
-
-            setHeroi(novoEstado);
-          }}
-        />
       </Box>
     </>
   );

@@ -1,10 +1,5 @@
 import {
   Box,
-  CircularProgress,
-  CircularProgressLabel,
-  Container,
-  Grid,
-  GridItem,
   Heading,
   Image,
   Tab,

@@ -1,8 +1,4 @@
 import { Box, Button, Td } from "@chakra-ui/react";
-import { useContext } from "react";
-import { Link } from "react-router-dom";
-import { HeroisContext } from "../../../../context/HeroisContext";
-import { IGrupo } from "../../../../interface/IGrupos";
 import { IHeroi } from "../../../../interface/IHerois";
 
 interface Props {

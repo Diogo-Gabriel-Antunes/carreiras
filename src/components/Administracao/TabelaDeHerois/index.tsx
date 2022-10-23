@@ -1,22 +1,7 @@
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-  Button,
-  Box,
-} from "@chakra-ui/react";
-import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
-import { HeroisContext } from "../../../context/HeroisContext";
+import { Tr, Td, Box } from "@chakra-ui/react";
+import React from "react";
 import { IGrupo } from "../../../interface/IGrupos";
 import { IHeroi } from "../../../interface/IHerois";
-import CriacaoGrupo from "../../../pages/Administracao/GruposPage/CriacaoGrupo";
 import CirculoProgressivo from "../CirculoProgressivo";
 import BotoesAdicionarGrupo from "./BotaoAdicionarGrupo";
 import BotoesTabela from "./BotoesTabela";

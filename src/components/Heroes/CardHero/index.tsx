@@ -75,7 +75,7 @@ const CardHero = ({ hero, infos = false }: Props) => {
             <GridItem>
               <Text>
                 <strong>Força</strong> :{" "}
-                {hero.powerstats.strength == "null"
+                {hero.powerstats.strength === "null"
                   ? "0"
                   : hero.powerstats.strength}
               </Text>

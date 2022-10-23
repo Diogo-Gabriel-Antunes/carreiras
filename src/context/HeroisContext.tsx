@@ -1,10 +1,4 @@
-import {
-  createContext,
-  ReactNode,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { httpClient } from "../ClienteDeRotas/HttpClient";
 import { Context } from "../interface/Context";
 import { IGrupo } from "../interface/IGrupos";
@@ -28,7 +22,6 @@ const HeroisProvider = ({ children }: Props) => {
   const listaDeGrupos: IGrupo[] = [];
   const [heroisDuplicados, setHeroisDuplicados] = useState<IHeroi[]>([]);
   const heroisFiltrados: IHeroi[] = [];
-  const [herois, setHerois] = useState<IHeroi[]>([]);
 
   useEffect(() => {
     Promise.all(rotas).then((resposta: any) => {
@@ -42,7 +35,7 @@ const HeroisProvider = ({ children }: Props) => {
   heroisDuplicados.forEach((item, index, array) => {
     let heroiDupliacado =
       heroisFiltrados.findIndex((heroi) => {
-        return item.id == heroi.id;
+        return item.id === heroi.id;
       }) > -1;
 
     if (!heroiDupliacado) {
@@ -64,7 +57,6 @@ const HeroisProvider = ({ children }: Props) => {
     <HeroisContext.Provider
       value={{
         herois: heroisFiltrados,
-        setHerois: setHerois,
         listaDeGrupos: listaDeGrupos,
       }}
     >

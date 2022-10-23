@@ -13,7 +13,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useContext, useLayoutEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import NavBarAdministracao from "../../../../components/Administracao/Navbar";
 import CardHero from "../../../../components/Heroes/CardHero";
@@ -115,7 +115,8 @@ const GrupoInfos = () => {
 
     setIntegrantes(integrantesAtualizado);
   };
-  useLayoutEffect(() => {
+
+  useEffect(() => {
     if (parametros.id) {
       let HeroisDisponiveisFiltrado: IHeroi[] = [];
       context?.herois?.forEach((item, index, array) => {
@@ -134,7 +135,7 @@ const GrupoInfos = () => {
       setHeroisDisponiveis(HeroisDisponiveisFiltrado);
     }
     setHeroisDisponiveis(context?.herois);
-  }, [context]);
+  }, [grupo?.integrantes, context?.herois, parametros.id, grupo?.name]);
 
   return (
     <Box display="flex">
@@ -197,7 +198,7 @@ const GrupoInfos = () => {
                 <Box display="flex">
                   <Box margin="0px auto" padding="12px 0px">
                     <Pagination
-                      numeroPorPagina={6}
+                      numeroPorPagina={10}
                       pagina={pagina}
                       setPagina={setPagina}
                       setSliceEnd={setSliceEnd}

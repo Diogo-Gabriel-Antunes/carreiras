@@ -1,4 +1,4 @@
-import { SearchIcon, ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import { IconButton } from "@chakra-ui/react";
 
 interface Props {
@@ -55,8 +55,8 @@ const Pagination = ({
               setPagina(pagina);
             } else {
               if (tamanhoMaximo) {
-                setSliceStart(sliceStart + 6);
-                setSliceEnd(sliceEnd + 6);
+                setSliceStart(sliceStart + numeroPorPagina);
+                setSliceEnd(sliceEnd + numeroPorPagina);
                 setPagina(pagina + 1);
               }
             }

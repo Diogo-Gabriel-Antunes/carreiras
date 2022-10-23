@@ -15,7 +15,7 @@ import { useContext, useState } from "react";
 import NavBarAdministracao from "../../../components/Administracao/Navbar";
 import TabelaDeHerois from "../../../components/Administracao/TabelaDeHerois";
 import { HeroisContext } from "../../../context/HeroisContext";
-import { SearchIcon, ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import { SearchIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import Pagination from "../../../components/Administracao/Pagination";
 

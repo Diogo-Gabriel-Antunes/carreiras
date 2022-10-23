@@ -1,10 +1,10 @@
-import { Box, Button, Grid, IconButton } from "@chakra-ui/react";
+import { Box, Grid, IconButton } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import CardHero from "../../components/Heroes/CardHero";
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
 import { HeroisContext } from "../../context/HeroisContext";
-import { SearchIcon, ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 const Heroes = () => {
   const contexto = useContext(HeroisContext);
   const [pagina, setPagina] = useState(1);

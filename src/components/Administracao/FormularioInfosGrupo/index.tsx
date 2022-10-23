@@ -7,7 +7,6 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { Dispatch, SetStateAction } from "react";
-import { IGrupo } from "../../../interface/IGrupos";
 
 interface Props {
   titulo: string;
@@ -37,11 +36,17 @@ const FormInfosGrupo = ({
           alignItems="center"
           height="250px"
           flexDirection="column"
-          margin="0 auto"
+          margin="24px auto"
+          border="2px solid"
+          borderColor="blue.700"
+          padding="20px 0"
+          borderRadius={12}
         >
-          <Box margin="24px 0">
-            <FormLabel>{label}</FormLabel>
+          <Box margin="32px">
+            <FormLabel textAlign="center">{label}</FormLabel>
             <Input
+              borderColor="blue.500"
+              variant="filled"
               required
               defaultValue={valorInput}
               onChange={(e) => onChangeDoInput(e.target.value)}
@@ -52,15 +57,16 @@ const FormInfosGrupo = ({
               colorScheme="blue"
               onClick={() => {
                 if (parametrosDaFuncao) {
-                  if (parametrosDaFuncao.length === 3) {
-                    funcaoDoBotao(
-                      parametrosDaFuncao[0],
-                      parametrosDaFuncao[1],
-                      parametrosDaFuncao[2]
-                    );
-                  } else {
-                    funcaoDoBotao(parametrosDaFuncao[0], parametrosDaFuncao[1]);
-                  }
+                  parametrosDaFuncao.length === 3
+                    ? funcaoDoBotao(
+                        parametrosDaFuncao[0],
+                        parametrosDaFuncao[1],
+                        parametrosDaFuncao[2]
+                      )
+                    : funcaoDoBotao(
+                        parametrosDaFuncao[0],
+                        parametrosDaFuncao[1]
+                      );
                 }
               }}
             >

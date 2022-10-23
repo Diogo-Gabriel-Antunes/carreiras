@@ -2,22 +2,12 @@ import {
   Box,
   Button,
   FormControl,
-  FormHelperText,
   FormLabel,
-  Grid,
   Heading,
-  Input,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
   Select,
   SimpleGrid,
-  Text,
-  Textarea,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useLayoutEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   InputPadrao,
@@ -25,16 +15,14 @@ import {
 } from "../../../../components/Administracao/FormHerois";
 import NavBarAdministracao from "../../../../components/Administracao/Navbar";
 import { HeroisContext } from "../../../../context/HeroisContext";
-import { Appearance, IHeroi } from "../../../../interface/IHerois";
+import { IHeroi } from "../../../../interface/IHerois";
 import { useForm, UseFormSetValue, FieldValues } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import esquemaDeValidacoes, { esquema } from "../../../../SchemaValidacao";
 
 const atualizaHerois = (Lista: IHeroi[], idDoHeroi: string, heroi: IHeroi) => {
   Lista.reduce((listaAntiga: IHeroi[], heroiAtualizado: IHeroi) => {
-    let obj = idDoHeroi.includes(
-      heroiAtualizado.name ? heroiAtualizado.name : ""
-    )
+    let obj = idDoHeroi.includes(heroiAtualizado.id ? heroiAtualizado.id : "")
       ? Object.assign(heroiAtualizado, heroi)
       : heroiAtualizado;
     listaAntiga.push(obj);
@@ -61,8 +49,9 @@ const cadastraHeroi = (lista: IHeroi[] | undefined, heroi: IHeroi) => {
   }
 };
 
-const reformaHeroi = (heroi: esquema): IHeroi => {
+const reformaHeroi = (heroi: esquema, id: string): IHeroi => {
   return {
+    id: id,
     name: heroi.name,
 
     biography: {
@@ -154,11 +143,11 @@ const FormHeroi = () => {
     },
   });
   const submit = (heroi: any) => {
-    const heroiReformado = reformaHeroi(heroi);
-    console.log(heroi);
+    const id = parametros.id ? parametros.id : "";
+    const heroiReformado = reformaHeroi(heroi, id);
     if (parametros.id && context?.herois) {
-      console.log(context.herois);
       atualizaHerois(context.herois, parametros.id, heroiReformado);
+      navigate("/");
     } else {
       cadastraHeroi(context?.herois, heroiReformado);
       navigate("/herois");
@@ -204,7 +193,7 @@ const FormHeroi = () => {
     setValue("strength", heroi.powerstats.strength);
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (parametros.id) {
       const heroi = context?.herois?.filter(
         (herois) => herois.id === parametros.id
@@ -230,36 +219,26 @@ const FormHeroi = () => {
           >
             <Box display="flex" padding="32px 0px">
               <Box margin="0 auto">
-                <FormLabel textAlign="center">Nome</FormLabel>
-                <Input
-                  type="text"
-                  defaultValue={heroi.name}
-                  {...register("name")}
+                <InputPadrao
+                  heroi={heroi}
+                  label={"Nome"}
+                  setHeroi={setHeroi}
                   value={heroi?.name}
-                  name="name"
-                  onChange={(e) => {
-                    const novoEstado = Object.assign({}, heroi);
-                    novoEstado.name = e.target.value;
-                    setHeroi(novoEstado);
-                  }}
+                  errors={errors?.name?.message?.toString()}
+                  name={"name"}
+                  register={register}
                 />
-                <>{errors?.name?.message}</>
               </Box>
               <Box margin="0 auto">
-                <FormLabel textAlign="center">Imagem(URL)</FormLabel>
-                <Input
-                  {...register("url")}
-                  type="text"
-                  defaultValue={heroi.image.url}
+                <InputPadrao
+                  heroi={heroi}
+                  label={"Imagem(URL)"}
+                  setHeroi={setHeroi}
                   value={heroi?.image.url}
-                  name="url"
-                  onChange={(e) => {
-                    const novoEstado = Object.assign({}, heroi);
-                    novoEstado.image.url = e.target.value;
-                    setHeroi(novoEstado);
-                  }}
+                  errors={errors?.url?.message?.toString()}
+                  name={"url"}
+                  register={register}
                 />
-                <>{errors?.url?.message}</>
               </Box>
             </Box>
             <hr />
@@ -348,13 +327,45 @@ const FormHeroi = () => {
                       />
                       <InputPadrao
                         heroi={heroi}
-                        label={"Herois/Vilão"}
-                        name="alignment"
+                        label={"Apelidos"}
+                        name="aliases"
                         register={register}
                         setHeroi={setHeroi}
-                        value={heroi.biography.alignment}
-                        errors={errors.alignment?.message?.toString()}
+                        value={heroi.biography.aliases[0]}
+                        errors={errors.aliases?.message?.toString()}
                       />
+                      <Box
+                        margin="24px"
+                        border="2px solid"
+                        borderColor="blue.700"
+                        padding="20px 0"
+                        borderRadius={12}
+                      >
+                        <FormLabel textAlign="center">Heroi/Vilão</FormLabel>
+                        <Box margin="32px">
+                          <Select
+                            borderColor="blue.500"
+                            variant="filled"
+                            {...register("alignment")}
+                            name="alignment"
+                            placeholder="Heroi/Vilão"
+                            width="241px"
+                            value={heroi?.biography?.alignment}
+                            onChange={(e) => {
+                              const novoEstado = Object.assign({}, heroi);
+                              novoEstado.biography.alignment = e.target.value;
+                              setHeroi(novoEstado);
+                            }}
+                          >
+                            <option value="good">Heroi</option>
+                            <option value="bad">Vilão</option>
+                            <option value="neutral">Neutro</option>
+                          </Select>
+                          <p className={`erroralignment`}>
+                            {errors.alignment?.message?.toString()}
+                          </p>
+                        </Box>
+                      </Box>
                       <InputPadrao
                         heroi={heroi}
                         label={"Personalidades"}
@@ -407,15 +418,38 @@ const FormHeroi = () => {
               <Box display="flex" flexDirection="column">
                 <Box display="flex">
                   <SimpleGrid columns={3} spacing={10}>
-                    <InputPadrao
-                      heroi={heroi}
-                      label={"Genero"}
-                      name="gender"
-                      register={register}
-                      setHeroi={setHeroi}
-                      value={heroi.appearance.gender}
-                      errors={errors.gender?.message?.toString()}
-                    />
+                    <Box
+                      margin="24px"
+                      border="2px solid"
+                      borderColor="blue.700"
+                      padding="20px 0"
+                      borderRadius={12}
+                    >
+                      <FormLabel textAlign="center">Genero</FormLabel>
+                      <Box margin="32px">
+                        <Select
+                          borderColor="blue.500"
+                          variant="filled"
+                          {...register("gender")}
+                          placeholder="Genero"
+                          width="207px"
+                          name="gender"
+                          value={heroi?.appearance?.gender}
+                          onChange={(e) => {
+                            const novoEstado = Object.assign({}, heroi);
+                            novoEstado.appearance.gender = e.target.value;
+                            setHeroi(novoEstado);
+                          }}
+                        >
+                          <option value="Male">Masculino</option>
+                          <option value="Female">Feminino</option>
+                          <option value="-">Indefindo</option>
+                        </Select>
+                        <p className="errorgender">
+                          {errors.gender?.message?.toString()}
+                        </p>
+                      </Box>
+                    </Box>
                     <InputPadrao
                       heroi={heroi}
                       label={"Peso"}
@@ -474,34 +508,27 @@ const FormHeroi = () => {
                 <Box display="flex">
                   <Box display="flex">
                     <Box margin="32px" textAlign="center">
-                      <FormLabel textAlign="center">Profissão</FormLabel>
-
-                      <Input
-                        {...register("occupation")}
-                        name="occupation"
-                        placeholder="Profissão do heroi"
+                      <InputPadrao
+                        heroi={heroi}
+                        label={"Profissão"}
+                        setHeroi={setHeroi}
                         value={heroi?.work?.occupation}
-                        onChange={(e) => {
-                          const novoEstado = Object.assign({}, heroi);
-                          novoEstado.work.occupation = e.target.value;
-                          setHeroi(novoEstado);
-                        }}
+                        errors={errors?.occupation?.message?.toString()}
+                        name={"occupation"}
+                        register={register}
                       />
                     </Box>
                   </Box>
                   <Box display="flex">
                     <Box margin="32px">
-                      <FormLabel textAlign="center">Base de trabalho</FormLabel>
-                      <Input
-                        {...register("base")}
-                        name="base"
-                        placeholder="Base de trabalho do heroi"
+                      <InputPadrao
+                        heroi={heroi}
+                        label={"Base de trabalho"}
+                        setHeroi={setHeroi}
                         value={heroi?.work?.base}
-                        onChange={(e) => {
-                          const novoEstado = Object.assign({}, heroi);
-                          novoEstado.work.base = e.target.value;
-                          setHeroi(novoEstado);
-                        }}
+                        errors={errors?.base?.message?.toString()}
+                        name={"base"}
+                        register={register}
                       />
                     </Box>
                   </Box>
@@ -517,37 +544,29 @@ const FormHeroi = () => {
                 <Box display="flex">
                   <Box display="flex">
                     <Box margin="32px" textAlign="center">
-                      <FormLabel textAlign="center">Familiares</FormLabel>
-
-                      <Input
-                        {...register("relatives")}
-                        name="relatives"
-                        placeholder="Vinculos do heroi"
+                      <InputPadrao
+                        heroi={heroi}
+                        label={"Familiares"}
+                        setHeroi={setHeroi}
                         value={heroi?.connections?.relatives}
-                        onChange={(e) => {
-                          const novoEstado = Object.assign({}, heroi);
-                          novoEstado.connections.relatives = e.target.value;
-                          setHeroi(novoEstado);
-                        }}
+                        errors={errors?.relatives?.message?.toString()}
+                        name={"relatives"}
+                        register={register}
                       />
                     </Box>
                   </Box>
                   <Box display="flex">
                     <Box margin="32px">
-                      <FormLabel textAlign="center">Vinculos</FormLabel>
-                      <Textarea
-                        {...register("group-affiliation")}
-                        name="group-affiliation"
-                        placeholder="Familiares do heroi"
-                        width="241px"
-                        resize="none"
-                        value={heroi?.connections["group-affiliation"]}
-                        onChange={(e) => {
-                          const novoEstado = Object.assign({}, heroi);
-                          novoEstado.connections["group-affiliation"] =
-                            e.target.value;
-                          setHeroi(novoEstado);
-                        }}
+                      <InputPadrao
+                        heroi={heroi}
+                        label={"Vinculos"}
+                        setHeroi={setHeroi}
+                        value={heroi?.connections?.["group-affiliation"]}
+                        errors={errors?.[
+                          "group-affiliation"
+                        ]?.message?.toString()}
+                        name={"group-affiliation"}
+                        register={register}
                       />
                     </Box>
                   </Box>

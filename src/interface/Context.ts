@@ -4,5 +4,4 @@ import { IHeroi } from "./IHerois";
 export interface Context {
   herois: IHeroi[] | undefined;
   listaDeGrupos: IGrupo[] | undefined;
-  setHerois: React.Dispatch<React.SetStateAction<IHeroi[]>>;
 }

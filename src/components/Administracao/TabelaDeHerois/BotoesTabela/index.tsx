@@ -30,6 +30,7 @@ const BotoesTabela = ({ heroi, grupo, refresh, setRefresh }: Props) => {
       setRefresh(refresh + 1);
     }
   };
+
   return (
     <>
       <Td isNumeric>
