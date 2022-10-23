@@ -44,7 +44,7 @@ const HeroisPage = () => {
   });
   return (
     <Box display="flex">
-      <Box>
+      <Box minHeight="100vh">
         <NavBarAdministracao />
       </Box>
       <Box display="flex" width="100%">

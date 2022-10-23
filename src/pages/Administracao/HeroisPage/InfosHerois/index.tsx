@@ -30,10 +30,10 @@ const InfosHerois = () => {
       (herois) => herois.id === parametros.id
     )[0];
     heroi && setHeroi(heroi);
-  }, []);
+  }, [context]);
   return (
     <Box display="flex">
-      <Box>
+      <Box minHeight="100vh">
         <NavBarAdministracao />
       </Box>
       <Box margin="0 auto">

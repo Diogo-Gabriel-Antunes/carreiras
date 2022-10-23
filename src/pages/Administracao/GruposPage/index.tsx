@@ -32,7 +32,7 @@ const GruposPage = () => {
   console.log(gruposPesquisados);
   return (
     <Box display="flex">
-      <Box>
+      <Box minHeight="100vh">
         <NavBarAdministracao />
       </Box>
       <Box display="flex" width="100%">

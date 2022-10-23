@@ -85,7 +85,7 @@ const GrupoInfos = () => {
   ];
   const [heroisDisponiveis, setHeroisDisponiveis] = useState<
     IHeroi[] | undefined
-  >(context?.herois);
+  >();
   const grupo = context?.listaDeGrupos?.filter(
     (grupos) => grupos.id === parametros.id
   )[0];
@@ -133,8 +133,10 @@ const GrupoInfos = () => {
       });
       setNovoNomeDoGrupo(grupo?.name);
       setHeroisDisponiveis(HeroisDisponiveisFiltrado);
+    } else {
+      setHeroisDisponiveis(context?.herois);
     }
-  }, [grupo?.integrantes, context?.herois, parametros.id]);
+  }, [context?.herois]);
 
   return (
     <Box display="flex">

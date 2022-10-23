@@ -1,4 +1,4 @@
-describe("empty spec", () => {
+describe("Teste formulario", () => {
   it("Verifica se existe todos inputs necessarios e estao com o campo vazio", () => {
     cy.visit("/novoheroi");
     cy.get("input").should("have.length", 23);
