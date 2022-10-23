@@ -31,8 +31,6 @@ const HeroisPage = () => {
     "Poder",
     "Combate",
     "Infos",
-    "Editar",
-    "Deletar",
   ];
   const [pagina, setPagina] = useState(1);
   const [sliceStart, setSliceStart] = useState(0);
@@ -62,11 +60,7 @@ const HeroisPage = () => {
                 <Box>
                   <Heading>Lista de herois</Heading>
                 </Box>
-                <Box>
-                  <Link to="/novoheroi">
-                    <Button colorScheme="blue">Novo Heroi</Button>
-                  </Link>
-                </Box>
+
                 <Box position="relative" paddingRight="20px">
                   <Input
                     placeholder="Pesquida de herois"

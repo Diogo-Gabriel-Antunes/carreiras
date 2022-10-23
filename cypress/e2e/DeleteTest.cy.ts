@@ -15,22 +15,6 @@ describe("Delete test", () => {
     });
   });
 
-  it("Deleta heroi", () => {
-    cy.visit("/");
-    cy.wait(500);
-    cy.get("[data-testid = 'heroi1']").should((id) => {
-      expect(id).to.exist;
-    });
-
-    cy.get(
-      '[data-testid="heroi1"] > :nth-child(11) > .css-k008qs > .css-13o6z6d > .chakra-button'
-    ).click();
-
-    cy.get("[data-testid = 'heroi1']").should((id) => {
-      expect(id).to.not.exist;
-    });
-  });
-
   it("Deleta heroi do grupo", () => {
     cy.visit(`/grupo/1`);
     cy.wait(500);

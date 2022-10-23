@@ -52,7 +52,7 @@ const HeroisProvider = ({ children }: Props) => {
   heroisFiltrados.sort(
     (heroiA, heroiB) => Number(heroiA.id) - Number(heroiB.id)
   );
-  console.log(heroisFiltrados);
+
   return (
     <HeroisContext.Provider
       value={{

@@ -44,15 +44,6 @@ const BotoesTabela = ({ heroi, grupo, refresh, setRefresh }: Props) => {
               </Box>
             </Box>
           </Td>
-          <Td isNumeric>
-            <Box display="flex">
-              <Box margin="0 auto">
-                <Link to={`/herois/${heroi.id}`}>
-                  <Button colorScheme="blue">Editar</Button>
-                </Link>
-              </Box>
-            </Box>
-          </Td>
         </>
       ) : (
         <>
@@ -65,23 +56,22 @@ const BotoesTabela = ({ heroi, grupo, refresh, setRefresh }: Props) => {
               </Box>
             </Box>
           </Td>
+          <Td isNumeric>
+            <Box display="flex">
+              <Box margin="0 auto">
+                <Button
+                  colorScheme="red"
+                  onClick={() =>
+                    heroi ? excluirHeroi(heroi) : excluirGrupo(grupo)
+                  }
+                >
+                  Remover
+                </Button>
+              </Box>
+            </Box>
+          </Td>
         </>
       )}
-
-      <Td isNumeric>
-        <Box display="flex">
-          <Box margin="0 auto">
-            <Button
-              colorScheme="red"
-              onClick={() =>
-                heroi ? excluirHeroi(heroi) : excluirGrupo(grupo)
-              }
-            >
-              Remover
-            </Button>
-          </Box>
-        </Box>
-      </Td>
     </>
   );
 };
